@@ -6,6 +6,13 @@ from flask import Flask, render_template , redirect , request
 app = Flask(__name__)
 shortened_urls = {}
 
+import os
+db_path = os.path.join(os.path.dirname(__file__), "urls.json")
+try:
+    with open(db_path, "r") as f:
+        shortened_urls = json.load(f)
+except FileNotFoundError:
+    pass
 
 def generate_short_url(length = 6):
     chars = string.digits + string.digits
@@ -20,7 +27,7 @@ def index():
         while short_url in shortened_urls:
             short_url = generate_short_url()
         shortened_urls[short_url] = long_url
-        with open("urls.json" , "w") as f:
+        with open(db_path , "w") as f:
             json.dump(shortened_urls ,f)
         return f"Shortened Url :{request.url_root}{short_url}"
     return render_template("index.html")
@@ -37,8 +44,6 @@ def redirect_url(short_url):
 
 
 if __name__ == "__main__":
-    with open("urls.json","r") as f:
-        shortened_urls = json.load(f)
     app.run(debug=True)
 
 
