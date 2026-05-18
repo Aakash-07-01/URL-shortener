@@ -29,7 +29,7 @@ def index():
         shortened_urls[short_url] = long_url
         with open(db_path , "w") as f:
             json.dump(shortened_urls ,f)
-        return f"Shortened Url :{request.url_root}{short_url}"
+        return render_template("index.html", shortened_url=f"{request.url_root}{short_url}")
     return render_template("index.html")
 
 
